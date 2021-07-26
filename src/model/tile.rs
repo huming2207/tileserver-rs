@@ -256,7 +256,7 @@ pub fn get_grid_data(
     Ok(grid_data)
 }
 
-pub fn get_tile_data(z: u32, x: u32, y: u32) -> Result<Vec<u8>> {
+pub fn get_tile_data(z: &String, x: &String, y: &String) -> Result<Vec<u8>> {
     let connection = match MBTILES_POOL.get() {
         Ok(conn) => conn,
         Err(err) => {
