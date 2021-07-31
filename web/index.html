@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Map Preview - TileServer-rs</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@1.15.2/dist/maplibre-gl.css" integrity="sha256-Ql8WB81mu27BVBng2iDbDN28cueGCEnDWtZ5U/fKIBA=" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@1.15.2/dist/maplibre-gl.js" integrity="sha256-DZX5P4DwrMTAQcrxknJKB7yvckwa5gw12lN0KL+Qz/Q=" crossorigin="anonymous"></script>
+  <style>
+    body { margin:0; padding:0; }
+    #map { position:absolute; top:0; bottom:0; width:100%; }
+  </style>
+</head>
+<body>
+  <h1 style="display:none;">Map Preview</h1>
+  <div id='map'></div>
+  <script>
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      let style = urlParams.get('style')
+      if (!style) {
+        style = '/styles/day/style.json';
+      }
+
+      var map = new maplibregl.Map({
+        container: 'map',
+        style: style,
+        hash: true
+      });
+      map.addControl(new maplibregl.NavigationControl());
+  </script>
+</body>
+</html>
