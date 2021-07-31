@@ -1,35 +1,16 @@
-use std::convert::Infallible;
+use actix_web::{HttpResponse, get, web};
 
-use hyper::{Body, Request, Response};
-use routerify::ext::RequestExt;
+use crate::{model::{error::Result, tile::get_tile_data}};
 
-use crate::{model::tile::get_tile_data, util::err_response_builder::build_not_found_response};
+#[get("/{zoom}/{x}/{y}.pbf")]
+pub async fn serve_vector(req: web::Path<(String, String, String)>) -> Result<HttpResponse> {
+    let req_inner = req.into_inner();
+    let zoom = req_inner.0;
+    let x = req_inner.1;
+    let y = req_inner.2;
 
-pub async fn serve_vector(req: Request<Body>) -> Result<Response<Body>, Infallible> {
-    let zoom = match req.param("zoom") {
-        Some(str) => str,
-        None => {
-            return Ok(build_not_found_response());
-        }
-    };
-
-    let x = match req.param("x") {
-        Some(str) => str,
-        None => {
-            return Ok(build_not_found_response());
-        }
-    };
-
-    let y = match req.param("y") {
-        Some(str) => str,
-        None => {
-            return Ok(build_not_found_response());
-        }
-    };
-    
-    let tile = get_tile_data(zoom, x, y).unwrap();
-    let resp = Response::builder()
+    let tile = get_tile_data(&zoom, &x, &y).unwrap();
+    Ok(HttpResponse::Ok()
         .header("Content-Type", "application/x-protobuf")
-        .body(Body::from(tile)).unwrap();
-    Ok(resp)
+        .body(tile))
 }

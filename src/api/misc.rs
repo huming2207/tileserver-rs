@@ -1,14 +1,20 @@
-use std::{convert::Infallible, env, fs};
+use std::{env, fs};
+use actix_web::HttpResponse;
 use lazy_static::lazy_static;
 
-use hyper::{Body, Request, Response};
-
 lazy_static! {
-    static ref STYLE_JSON_FEED: String = fs::read_to_string(env::var("TS_MAP_STYLE").unwrap_or("style.json".to_string())).unwrap();
+    static ref DAY_STYLE_JSON_FEED: String = fs::read_to_string(env::var("TS_MAP_DAY_STYLE").unwrap_or("style_day.json".to_string())).unwrap();
+    static ref NIGHT_STYLE_JSON_FEED: String = fs::read_to_string(env::var("TS_MAP_NIGHT_STYLE").unwrap_or("style_day.json".to_string())).unwrap();
 }
 
-pub async fn serve_style_feed(_req: Request<Body>) -> Result<Response<Body>, Infallible> { 
-    Ok(Response::builder()
-        .header("Content-Type", "application/json")
-        .body(Body::from(STYLE_JSON_FEED.as_str())).unwrap())
+pub(crate) async fn serve_day_style_feed() -> HttpResponse { 
+    HttpResponse::Ok()
+        .content_type("application/json")
+        .body(NIGHT_STYLE_JSON_FEED.as_str())
+}
+
+pub(crate) async fn serve_night_style_feed() -> HttpResponse { 
+    HttpResponse::Ok()
+        .content_type("application/json")
+        .body(NIGHT_STYLE_JSON_FEED.as_str())
 }

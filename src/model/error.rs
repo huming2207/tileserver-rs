@@ -1,3 +1,4 @@
+use actix_web::{HttpResponse, dev::HttpResponseBuilder, error, http::{StatusCode, header}};
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -25,6 +26,19 @@ pub enum TileError {
 pub enum BaseError {
     #[error(transparent)]
     TileData(#[from] TileError)
+}
+
+impl error::ResponseError for BaseError {
+    fn error_response(&self) -> HttpResponse {
+        HttpResponseBuilder::new(self.status_code())
+            .set_header(header::CONTENT_TYPE, "text/html; charset=utf-8")
+            .body(self.to_string())
+    }
+    fn status_code(&self) -> StatusCode {
+        match *self {
+            BaseError::TileData(_) => StatusCode::INTERNAL_SERVER_ERROR,
+        }
+    }
 }
 
 pub type Result<T> = std::result::Result<T, BaseError>;

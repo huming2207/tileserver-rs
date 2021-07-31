@@ -7,8 +7,7 @@ license = "MIT"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-routerify = "2"
-hyper = "0.14"
+actix-web = "3"
 tokio = { version = "1", features = ["full"] }
 lazy_static = "1.4"
 serde = { version = "1.0", features = ["derive"] }
@@ -25,3 +24,4 @@ dotenv = "0.15.0"
 env_logger = "0.9.0"
 log = "0.4"
 mimalloc = { version = "*" }
+derive_more = "0.99.16"
