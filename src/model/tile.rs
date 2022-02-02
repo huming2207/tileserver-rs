@@ -263,6 +263,10 @@ pub fn get_tile_data(z: &String, x: &String, y: &String) -> Result<Vec<u8>> {
             return Err(BaseError::TileData(TileError::ConnPool(err)))
         },
     };
+
+    let z_val: u32 = z.parse().unwrap_or_default();
+    let mut y_val: u32 = y.parse().unwrap_or_default();
+    y_val = (1 << z_val) - 1 - y_val;
     
     let mut statement = connection
         .prepare(
@@ -274,7 +278,7 @@ pub fn get_tile_data(z: &String, x: &String, y: &String) -> Result<Vec<u8>> {
             "#,
         )
         .unwrap(); // TODO handle error
-    match statement.query_row(params![z, x, y], |row| Ok(row.get(0).unwrap())) {
+    match statement.query_row(params![z_val, x, y_val], |row| Ok(row.get(0).unwrap())) {
         Ok(data) => Ok(data),
         Err(err) => Err(BaseError::TileData(TileError::Database(err))),
     }

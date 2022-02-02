@@ -1,3 +1,5 @@
+use std::io;
+
 use actix_web::{HttpResponse, dev::HttpResponseBuilder, error, http::{StatusCode, header}};
 use thiserror::Error;
 
@@ -11,6 +13,9 @@ pub enum TileError {
 
     #[error("Connection pool error")]
     ConnPool(#[from] r2d2::Error),
+
+    #[error("IO Error")]
+    IOError(#[from] io::Error),
 
     #[error("Wrong configuration: {0}")]
     Config(String),
